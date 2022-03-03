@@ -14,7 +14,7 @@ class RegisterPage extends StatelessWidget {
         backgroundColor: const Color(0xffF2F2F2),
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.95,
               child: Column(
@@ -81,7 +81,6 @@ class __FormState extends State<_Form> {
           BotonAzul(
             text: 'Login',
             onPressed: () {
-              print(emailCtrl.text);
               return;
             },
           )
