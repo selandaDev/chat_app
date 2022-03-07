@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:realtime_chat/helpers/mostrar_alerta.dart';
+import 'package:realtime_chat/services/auth_service.dart';
 import 'package:realtime_chat/widgets/boton_azul.dart';
 
 import '../widgets/custom_input.dart';
@@ -39,29 +42,7 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-// WIDGETS
-
-// class _Logo extends StatelessWidget {
-//   const _Logo({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Container(
-//         width: 170,
-//         margin: EdgeInsets.only(top: 50),
-//         child: Column(
-//           children: const [
-//             Image(image: AssetImage('assets/tag-logo.png')),
-//             SizedBox(height: 20),
-//             Text('Messenger', style: TextStyle(fontSize: 30))
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+// Widgets
 class _Form extends StatefulWidget {
   const _Form({Key? key}) : super(key: key);
 
@@ -75,6 +56,8 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -94,39 +77,26 @@ class __FormState extends State<_Form> {
           ),
           BotonAzul(
             text: 'Login',
-            onPressed: () {
-              return;
-            },
+            onPressed: authService.autenticando
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+                    final loginOk = await authService.login(
+                        emailCtrl.text.trim(), passCtrl.text);
+
+                    if (loginOk) {
+                      // navegar a otra pantalla
+                      Navigator.pushReplacementNamed(context, 'usuarios');
+
+                      // ToDo Conectar al socket server
+                    } else {
+                      mostrarAlerta(context, 'Login incorrecto',
+                          'Revise las credenciales');
+                    }
+                  },
           )
         ],
       ),
     );
   }
 }
-
-// class _Labels extends StatelessWidget {
-//   const _Labels({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Column(
-//         children: [
-//           const Text(
-//             '¿No tienes cuenta?',
-//             style: TextStyle(
-//                 color: Colors.black54,
-//                 fontSize: 15,
-//                 fontWeight: FontWeight.w300),
-//           ),
-//           const SizedBox(height: 10),
-//           Text('Crea una ahora!',
-//               style: TextStyle(
-//                   color: Colors.blue[600],
-//                   fontSize: 18,
-//                   fontWeight: FontWeight.bold))
-//         ],
-//       ),
-//     );
-//   }
-// }

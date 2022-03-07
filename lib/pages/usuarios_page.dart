@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:realtime_chat/models/usuario.dart';
+import 'package:realtime_chat/services/auth_service.dart';
 
 class UsuariosPage extends StatefulWidget {
   @override
@@ -11,20 +13,17 @@ class _UsuariosPageState extends State<UsuariosPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  final usuarios = [
-    Usuario(online: true, email: 'test1@test.com', nombre: 'Rufino', uid: '1'),
-    Usuario(
-        online: false, email: 'test2@test.com', nombre: 'Atanasia', uid: '2'),
-    Usuario(
-        online: true, email: 'test3@test.com', nombre: 'Eustaquio', uid: '3'),
-  ];
+  final usuarios = [];
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Mi nombre',
+          title: Text(
+            usuario.nombre,
             style: TextStyle(color: Colors.black87),
           ),
           elevation: 3,
@@ -34,7 +33,12 @@ class _UsuariosPageState extends State<UsuariosPage> {
               Icons.exit_to_app,
               color: Colors.black87,
             ),
-            onPressed: () {},
+            onPressed: () {
+              // ToDo desconectar del socket
+
+              AuthService.deleteToken();
+              Navigator.pushReplacementNamed(context, 'login');
+            },
           ),
           actions: [
             Container(
